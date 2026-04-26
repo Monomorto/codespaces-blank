@@ -79,6 +79,15 @@ a:hover {
   font-weight: 500;
   position: relative;
 }
+.sidebar-nav a.meta-link {
+  font-size: 12px;
+  color: #8f98b2;
+  padding: 10px 14px;
+}
+.sidebar-nav a.meta-link:hover {
+  background: rgba(92, 230, 230, 0.08);
+  color: #ffffff;
+}
 .sidebar-nav a:hover {
   background: rgba(92, 230, 230, 0.12);
   color: #ffffff;
@@ -401,57 +410,174 @@ p {
 }
 
 /* Mobile Optimierung */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .app {
+    display: block;
+  }
+  
   .sidebar {
-    display: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    padding: 8px 12px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow: visible;
+    box-sizing: border-box;
   }
+  
+  .brand {
+    margin-bottom: 8px;
+  }
+  
+  .brand-title {
+    font-size: 14px;
+  }
+  
+  .brand-blob {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+  
+  .sidebar-nav {
+    display: block;
+    min-width: 0;
+  }
+  
+  .sidebar-nav li {
+    margin-bottom: 8px;
+  }
+  
+  .sidebar-nav a {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 10px;
+    white-space: normal;
+  }
+  
   .main {
-    margin-left: 0;
+    margin-left: 0 !important;
     padding: 16px;
+    flex: 1;
+    width: 100%;
+    min-width: 0;
   }
+  
   .section {
     padding: 16px;
     margin: 0;
+    max-width: 100%;
   }
+  
   .topbar {
     flex-direction: column;
     align-items: flex-start;
     padding: 16px;
   }
+  
   .topbar h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
+  
   .grid {
     grid-template-columns: 1fr;
   }
+  
   .filter-panel {
     flex-direction: column;
     padding: 16px;
+    gap: 12px;
   }
+  
   .filter-group {
     min-width: auto;
   }
+  
   .filter-actions {
     flex-direction: column;
+    gap: 10px;
   }
+  
+  .filter-button {
+    width: 100%;
+  }
+  
   .card {
     padding: 20px;
   }
+  
+  .card h2 {
+    font-size: 18px;
+  }
+  
   .card .count {
     font-size: 48px;
   }
+  
+  .entry-list li {
+    font-size: 13px;
+    padding: 6px 0;
+  }
+  
   h1 {
     font-size: 24px;
   }
+  
   h2 {
     font-size: 20px;
   }
+  
   h3 {
     font-size: 18px;
   }
+  
   .button {
     padding: 12px 16px;
     font-size: 14px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .steam-account,
+  .top-games {
+    padding: 16px;
+  }
+  
+  .top-games li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .playtime {
+    width: 100%;
+    text-align: left;
   }
 }
+
+@media (max-width: 680px) {
+  .sidebar-nav a {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  
+  .topbar {
+    padding: 14px;
+  }
+  
+  .main {
+    padding: 12px;
+  }
+  
+  .section {
+    padding: 14px;
+  }
 }

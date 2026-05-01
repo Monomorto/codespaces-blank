@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini-Spiele</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .wordle-container { text-align: center; }
+
+    .wordle-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 50px);
+      gap: 8px;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    .wordle-cell {
+      width: 50px;
+      height: 50px;
+      border: 2px solid #374151;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .correct { background: #22c55e; }
+    .present { background: #eab308; }
+    .wrong { background: #374151; }
+
+    .wordle-input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .wordle-button {
+      padding: 10px 15px;
+      margin-left: 5px;
+      border-radius: 8px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+    }
+
+    .wordle-message {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    /* Tastatur */
+    .keyboard {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .keyboard-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .key {
+      padding: 10px 12px;
+      background: #1f2937;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    /* dunkler wenn benutzt */
+    .key.used {
+      background: #111827;
+      opacity: 0.5;
+    }
+
+    /* Treffer */
+    .key.correct { background: #22c55e; opacity: 1; }
+    .key.present { background: #eab308; opacity: 1; }
+
+    @keyframes pop {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes flip {
+      0% { transform: rotateX(0); }
+      50% { transform: rotateX(90deg); }
+      100% { transform: rotateX(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-blob">M</span>
+      <div><p class="brand-title">Monomorto</p></div>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dart.html">Dart</a></li>
+      <li><a href="projekte.html">Projekte</a></li>
+      <li><a href="gaming.html">Gaming</a></li>
+      <li><a href="minispiele.html" class="active">Mini-Spiele</a></li>
+    </ul>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h1>Mini-Spiele</h1>
+    </div>
+
+    <div class="grid">
+      <div class="card wordle-container">
+        <h2>Tägliches Wordle</h2>
+
+        <div id="board"></div>
+
+        <input id="guessInput" class="wordle-input" maxlength="5" placeholder="Wort eingeben">
+        <button class="wordle-button" onclick="submitGuess()">Raten</button>
+
+        <p id="message" class="wordle-message"></p>
+
+        <div class="keyboard" id="keyboard"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const words = [
+"apfel","acker","alter","ampel","angel","anker","armut","asche","atlas","audio","augen","autos","azubi",
+"bande","banjo","baron","basis","beere","beile","biene","birne","bombe","bonus","bucht","bulle","bunte",
+"clown","coach","creme","danke","decke","delta","dicke","dinge","disco","dosen","drama","dreck","duell","durst",
+"eimer","elite","engel","erben","essen","etage","eulen",
+"fabel","faden","falle","farbe","feder","feuer","fisch","flame","flirt","fluch","folge","fuchs","funke",
+"gabel","gasse","geier","geist","genie","glanz","golem",
+"hafen","haken","halbe","hallo","hauch","hebel","hobby","hunde",
+"ideal","insel",
+"joker","junge",
+"kakao","kanal","kater","kette","kiosk","klang","kleid","klima","knopf","koala",
+"laden","lampe","lauch","leben","lehre","leise","linde","linie","lobby","luchs",
+"magen","maler","mango","maske","meise","messe","meter","miete","milch","misch","motte",
+"nadel","nacht","nager","narbe","nebel","neffe","niete","nobel","notiz",
+"offen","olive","opfer","orden","orgel",
+"pacht","panda","paris","party","pause","perle","pferd","pinsel","pirat","pixel","pizza",
+"quark","queen","quitt",
+"radio","ranke","raten","rebel","recht","regen","reise",
+"sache","salat","schaf","schuh","seele","seife","seite",
+"tacho","tante","taube","teich","tempo","tiger","tisch","titel","toast","trage","traum","trick","trost","tulpe",
+"umweg","unmut","unter","uralt",
+"vater","vegan","vogel",
+"wache","waden","waffe","wagen","wange","weide","weiss","werft","wette","woche","wolke","wurst",
+"yacht",
+"zange","zauber","zeile","zebra","zicke","ziege","zunge"
+];
+
+function getDailyWord() {
+  const start = new Date("2026-01-01");
+  const today = new Date();
+  const diff = Math.floor((today - start) / (1000*60*60*24));
+  return words[diff % words.length];
+}
+
+const solution = getDailyWord();
+let attempts = 0;
+const maxAttempts = 6;
+const usedLetters = new Set();
+
+document.getElementById("guessInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") submitGuess();
+});
+
+function submitGuess() {
+  const input = document.getElementById("guessInput");
+  const guess = input.value.toLowerCase();
+
+  if (guess.length !== 5) return showMessage("Bitte 5 Buchstaben eingeben");
+  if (attempts >= maxAttempts) return;
+
+  addRow(guess);
+  updateKeyboard(guess);
+
+  attempts++;
+
+  if (guess === solution) {
+    showMessage("Richtig! 🎉");
+    input.disabled = true;
+  } else if (attempts === maxAttempts) {
+    showMessage("Lösung: " + solution.toUpperCase());
+    input.disabled = true;
+  }
+
+  input.value = "";
+}
+
+function addRow(guess) {
+  const board = document.getElementById("board");
+  const row = document.createElement("div");
+  row.className = "wordle-grid";
+
+  for (let i = 0; i < 5; i++) {
+    const cell = document.createElement("div");
+    cell.className = "wordle-cell";
+    cell.textContent = guess[i];
+
+    cell.style.animation = `pop 0.2s ease ${i * 0.1}s`;
+
+    setTimeout(() => {
+      cell.style.animation = "flip 0.4s ease";
+
+      if (guess[i] === solution[i]) {
+        cell.classList.add("correct");
+      } else if (solution.includes(guess[i])) {
+        cell.classList.add("present");
+      } else {
+        cell.classList.add("wrong");
+      }
+
+    }, 300 + i * 200);
+
+    row.appendChild(cell);
+  }
+
+  board.appendChild(row);
+}
+
+function createKeyboard() {
+  const layout = ["qwertzuiop","asdfghjkl","yxcvbnm"];
+  const kb = document.getElementById("keyboard");
+
+  layout.forEach(rowLetters => {
+    const row = document.createElement("div");
+    row.className = "keyboard-row";
+
+    rowLetters.split("").forEach(letter => {
+      const key = document.createElement("div");
+      key.className = "key";
+      key.textContent = letter;
+
+      key.onclick = () => {
+        const input = document.getElementById("guessInput");
+        if (input.value.length < 5) input.value += letter;
+      };
+
+      row.appendChild(key);
+    });
+
+    kb.appendChild(row);
+  });
+}
+
+function updateKeyboard(guess) {
+  guess.split("").forEach((letter, index) => {
+    const key = [...document.querySelectorAll(".key")]
+      .find(k => k.textContent.toLowerCase() === letter);
+
+    if (!key) return;
+
+    if (letter === solution[index]) {
+      key.classList.remove("used", "present");
+      key.classList.add("correct");
+    } else if (solution.includes(letter)) {
+      if (!key.classList.contains("correct")) {
+        key.classList.remove("used");
+        key.classList.add("present");
+      }
+    } else {
+      if (!key.classList.contains("correct") && !key.classList.contains("present")) {
+        key.classList.add("used");
+      }
+    }
+  });
+}
+
+function showMessage(text) {
+  document.getElementById("message").textContent = text;
+}
+
+createKeyboard();
+</script>
+</body>
+</html>

@@ -9,101 +9,160 @@
   <link rel="stylesheet" href="styles.css">
 
   <style>
-    .wordle-container { text-align: center; }
+    .wordle-container { 
+  text-align: center; 
+}
 
-    .wordle-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 50px);
-      gap: 8px;
-      justify-content: center;
-      margin: 30px 0;
-    }
+/* Spielfeld */
+.wordle-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 50px);
+  gap: 8px;
+  justify-content: center;
+  margin: 30px 0;
+}
 
-    .wordle-cell {
-      width: 50px;
-      height: 50px;
-      border: 2px solid #374151;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
+.wordle-cell {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
 
-    .correct { background: #22c55e; }
-    .present { background: #eab308; }
-    .wrong { background: #374151; }
+.correct { background: #22c55e; }
+.present { background: #eab308; }
+.wrong { background: #374151; }
 
-    .wordle-input {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      margin-top: 10px;
-    }
+/* Input */
+.wordle-input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  margin-top: 10px;
+}
 
-    .wordle-button {
-      padding: 10px 15px;
-      margin-left: 5px;
-      border-radius: 8px;
-      border: none;
-      background: #3b82f6;
-      color: white;
-      cursor: pointer;
-    }
+.wordle-button {
+  padding: 10px 15px;
+  margin-left: 5px;
+  border-radius: 8px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+}
 
-    .wordle-message {
-      margin-top: 10px;
-      font-weight: bold;
-    }
+.wordle-message {
+  margin-top: 10px;
+  font-weight: bold;
+}
 
-    /* Tastatur */
-    .keyboard {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: center;
-    }
+/* ===================== */
+/* KEYBOARD DESKTOP */
+/* ===================== */
 
-    .keyboard-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+.keyboard {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
 
-    .key {
-      padding: 10px 12px;
-      background: #1f2937;
-      border-radius: 6px;
-      cursor: pointer;
-      user-select: none;
-      font-weight: bold;
-      transition: 0.2s;
-      min-width: 32px;
-      text-align: center;
-    }
+.keyboard-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
 
-    .key.used {
-      background: #111827;
-      opacity: 0.5;
-    }
+.key {
+  padding: 10px 12px;
+  background: #1f2937;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+  transition: 0.2s;
+  min-width: 32px;
+  text-align: center;
+}
 
-    .key.correct { background: #22c55e; opacity: 1; }
-    .key.present { background: #eab308; opacity: 1; }
+.key.used {
+  background: #111827;
+  opacity: 0.5;
+}
 
-    @keyframes pop {
-      0% { transform: scale(0.7); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
+.key.correct { background: #22c55e; opacity: 1; }
+.key.present { background: #eab308; opacity: 1; }
 
-    @keyframes flip {
-      0% { transform: rotateX(0); }
-      50% { transform: rotateX(90deg); }
-      100% { transform: rotateX(0); }
-    }
+/* Animationen */
+@keyframes pop {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes flip {
+  0% { transform: rotateX(0); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0); }
+}
+
+/* ===================== */
+/* 📱 MOBILE FIX */
+/* ===================== */
+
+@media (max-width: 768px) {
+
+  /* Spielfeld kleiner */
+  .wordle-grid {
+    grid-template-columns: repeat(5, 40px);
+    gap: 6px;
+  }
+
+  .wordle-cell {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  /* Input + Button */
+  .wordle-input,
+  .wordle-button {
+    width: 100%;
+    margin: 6px 0;
+  }
+
+  /* Keyboard auf Grid umstellen */
+  .keyboard {
+    width: 100%;
+  }
+
+  .keyboard-row {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+  }
+
+  .keyboard-row:nth-child(2) {
+    grid-template-columns: repeat(9, 1fr);
+    margin: 0 5%;
+  }
+
+  .keyboard-row:nth-child(3) {
+    grid-template-columns: repeat(7, 1fr);
+    margin: 0 15%;
+  }
+
+  .key {
+    padding: 10px 0;
+    font-size: 13px;
+  }
+}
 
     /* ===== MOBILE FIX ===== */
     @media (max-width: 768px) {

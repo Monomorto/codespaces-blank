@@ -112,6 +112,22 @@
         margin-top: 8px;
       }
     }
+
+    #daily-quote-section {
+      margin-bottom: 16px;
+    }
+
+    #daily-quote-section h2 {
+      margin: 0 0 8px 0;
+    }
+
+    #daily-quote {
+      margin: 0;
+      padding-left: 14px;
+      border-left: 3px solid #7f8fb5;
+      color: #c8d0e0;
+      font-style: italic;
+    }
   </style>
 </head>
 
@@ -146,10 +162,10 @@
       <section class="section">
 
         <article class="card" id="daily-quote-card">
-          <h2>Zitat des Tages</h2>
           <p id="daily-quote"></p>
         </article>
 
+      </br>
         <div class="grid">
 
           <article class="card">
@@ -185,7 +201,7 @@
     const quoteEl = document.getElementById('daily-quote');
 
     if (quoteEl) {
-      quoteEl.textContent = dailyQuotes[dayIndex];
+      quoteEl.textContent = `„${dailyQuotes[dayIndex]}“`;
     }
   </script>
 </body>

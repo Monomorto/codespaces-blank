@@ -193,15 +193,33 @@
   </div>
   <script>
     const dailyQuotes = [
-      "Die Wahrheit ist doch die, wenn wir genug Lügen hören, erkennen wir irgendwann die Wahrheit nicht mehr."
+      {
+        text: "Die Wahrheit ist doch die, wenn wir genug Lügen hören, erkennen wir irgendwann die Wahrheit nicht mehr."
+      },
+      {
+        text: "Schmerz ist vergänglich, was bleibt ist der Stolz.",
+        author: "Kollegah"
+      }
     ];
 
     const now = new Date();
     const dayIndex = Math.floor(now.getTime() / 86400000) % dailyQuotes.length;
     const quoteEl = document.getElementById('daily-quote');
+    const authorEl = document.getElementById('daily-quote-author');
+    const currentQuote = dailyQuotes[dayIndex];
 
     if (quoteEl) {
-      quoteEl.textContent = `„${dailyQuotes[dayIndex]}“`;
+      quoteEl.textContent = `„${currentQuote.text}“`;
+    }
+
+    if (authorEl) {
+      if (currentQuote.author) {
+        authorEl.textContent = `— ${currentQuote.author}`;
+        authorEl.hidden = false;
+      } else {
+        authorEl.textContent = '';
+        authorEl.hidden = true;
+      }
     }
   </script>
 </body>
